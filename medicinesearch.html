@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>user page</title>
+        <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.css"></link> -->
+        <!-- Favicon-->
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="http://127.0.0.1:5000/static/css/styles.css" rel="stylesheet" />
+        <style>
+            #Box{
+                padding: 25px;
+                background-color: white;
+                width: 80%;
+                margin: auto;
+            }
+            .row{
+                margin-top: 150px;
+            }
+            body{
+              background-image: url("http://127.0.0.1:5000/static/imgs/bg (5).jpg");
+              background-repeat: no-repeat;
+              background-attachment: fixed;
+              background-position: center center;
+              background-size: 100% 100vh;
+            }
+            form{
+                display: flex !important;
+            }
+            table{
+                text-align: left !important;
+            }
+            h1, h2, h3{
+                text-align: center;
+            }
+            .navbar-dark .navbar-nav .nav-link:hover, .navbar-dark .navbar-nav .nav-link:focus {
+              color: #cca000 !important;
+            }
+        </style>
+    </head>
+    <body id="page-top">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+            <div class="container">
+                <!-- <li class="nav-item"><a class="nav-link" href="#page-top">AUTISM</a></li> -->
+                <a class="navbar-brand h1" href="/Uhome">SNR Connections</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    Menu
+                    <i class="fas fa-bars ms-1"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+                        <li class="nav-item"><a class="nav-link" href="/Uhome">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/doctor_availability">Booking</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/medicine_availability">Medicine</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div id="Box">
+                        <h3>Check medicine availability</h3>
+                        <hr>
+                        <br>
+                        <form action="/medicine_availability" method="post">
+                              <label for="text">Medicine name:</label>
+                                <input type="text" list="medicines" class="form-control" id="name" name="name" placeholder="Search....">
+                                <datalist id="medicines">
+                                </datalist>
+
+                              &nbsp; &nbsp; &nbsp; &nbsp;
+                            <input type="submit" class="btn btn-success form-contro" >
+                          </form>
+                          <br><br><br>
+
+                          {% if result %}
+                              <table class="table">
+                                <tr>
+                                    <th>Medicine id</th>
+                                    <th>Medicine Name</th>
+                                    <th>Price</th>
+                                    <th>Expiry date</th>
+                                </tr>
+                                {% for row in result %}
+                                    <tr>
+                                        {% for col in row %}
+                                            <td>
+                                                {{col}}
+                                            </td>
+                                        {% endfor %}
+                                        {% set Id = row[0] %}
+                                    </tr>
+                                {% endfor %}
+                              </table>
+                              {% endif %}
+                              {% if msg %}
+                              <div class="container">
+                                <center><h3>{{msg}}</h3></center>
+                              </div>
+                              {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="http://127.0.0.1:5000/static/js/scripts.js"></script>
+       
+        <script>
+        $(document).ready(function() {
+
+          $("#name").on("input",function(e){
+            var medicineList = document.getElementById("medicines");
+            medicineList.innerHTML = "";
+            var msg = document.getElementById("msg");
+            msg.innerHTML = "";
+              $.ajax({
+                  method:"get",
+                  url:"/searchmedicine",
+                  data:{text:$("#name").val()},
+                  success:function(res){
+                    var options = '';
+                      $.each(res,function(index,medicine){
+                        options += '<option value="' +medicine + '" />';
+                      });
+                      medicineList.innerHTML = options;
+                  }
+              });
+          });
+
+      });
+  </script>
+
+    </body>
+</html>

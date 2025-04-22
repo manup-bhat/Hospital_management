@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>user page</title>
+        <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.css"></link> -->
+        <!-- Favicon-->
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="http://127.0.0.1:5000/static/css/styles.css" rel="stylesheet" />
+        <style>
+            #Box{
+                padding: 25px;
+                background-color: white;
+                width: 50%;
+                margin: auto;
+            }
+            #Box2{
+                padding: 25px;
+                background-color: white;
+                width: 80%;
+                margin: auto;
+            }
+            #Box2 #btns{
+                display: flex;
+                flex-wrap: wrap;
+            }
+            .row{
+                margin-top: 150px;
+            }
+            body{
+              background-image: url("http://127.0.0.1:5000/static/imgs/bg (6).jpg");
+              background-repeat: no-repeat;
+              background-attachment: fixed;
+              background-position: center center;
+              background-size: 100% 100vh;
+            }
+            h1, h2, h3{
+                text-align: center;
+            }
+            .navbar-dark .navbar-nav .nav-link:hover, .navbar-dark .navbar-nav .nav-link:focus {
+              color: #cca000 !important;
+            }
+        </style>
+    </head>
+    <body id="page-top">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+            <div class="container">
+                <!-- <li class="nav-item"><a class="nav-link" href="#page-top">AUTISM</a></li> -->
+                <a class="navbar-brand h1" href="/Uhome">SNR Connections</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    Menu
+                    <i class="fas fa-bars ms-1"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+                        <li class="nav-item"><a class="nav-link" href="/Uhome">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/doctor_availability">Booking</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/medicine_availability">Medicine</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    
+                        {% if msg %}
+                        <div id="Box">
+                            <div class="container">
+                                <div class="alert alert-success alert-dismissible">
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                    <strong>{{msg}}</strong> 
+                                </div>
+                                </div>
+                            </div>
+                            
+                            {% endif %}
+                           
+
+                            {% if timings %}
+                            <div id="Box2">
+                                <center><h3>Select time</h3></center>
+                                <hr><br>
+                                <div id="btns">
+                                {% for i in range(1, 17) %}
+                                {% if i|string in schedules %}
+                   
+                                <div style="margin: 20px;">
+                                    {% set Id = i %}
+                                    <a href="{{url_for('confirmbook', Id=Id )}}"  id="sub"><button disabled class="btn btn-success">{{timings[i|string]['starttime']}} - {{timings[i|string]['endtime']}}</button></a>
+                                </div>
+                                <style>
+                                    #sub{
+                                        pointer-events: none;
+                                    }
+                                </style>
+                                {% else %}
+                           
+                                <div style="margin: 20px;">
+                                    {% set Id = i %}
+                                    <a href="{{url_for('confirmbook', Id=Id )}}"><button class="btn btn-success">{{timings[i|string]['starttime']}} - {{timings[i|string]['endtime']}}</button></a>
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                            </div>
+                            {% else %}
+                            <div id="Box">
+                        <form  method="post" action="/doctor_availability">
+                            <center><h3>BOOKING</h3></center>
+                            <hr>
+                            <div class="form-group">
+                              <label for="hospital">Hospital:</label>
+                              <select class="form-control" id="hospital" name="hospital" onchange="displayDoctors()">
+                                <option value="">--- select hospital ---</option>
+                                {% for row in result %}
+                                    <option value="{{row}}">{{row}}</option>
+                                {% endfor %}
+                            </select>
+                            </div><br>
+                            <label for="doctor">Doctor:</label>
+                            <div class="form-group">
+                               <select name="doctor" id="doctorsList" class="form-control">
+                                <option value="">--- select doctor ---</option>
+                               </select>
+                              </div>
+                              <br>
+                              <div class="form-group">
+                                    <label for="date">Date</label>
+                                    <input type="date" name="date" id="date" class="form-control">
+                              </div>
+                              <br>
+                            <button type="submit" class="btn btn-success">Submit</button></br></br>
+                          </form>
+                          </div>
+                          {% endif %}
+                        </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="http://127.0.0.1:5000/static/js/scripts.js"></script>
+        <script>
+            function displayDoctors() {
+                var hospitalDropdown = document.getElementById("hospital");
+                var selectedHospital = hospitalDropdown.value;
+                var doctorsList = document.getElementById("doctorsList");
+
+                doctorsList.innerHTML = "";
+
+                $.ajax({
+                method:"post",
+                url:"/doctor_names",
+                data: {'hospital':selectedHospital},
+                success:function(res){
+                    console.log(res)
+                    for(let i=0; i<res[0].length;i++){
+                        var option = document.createElement("option");
+                            option.text = res[0][i]+' ( '+res[1][i]+' )';
+                            option.value = res[0][i];
+                            doctorsList.add(option);
+                       }
+                    },
+                    error: function (res) {
+                        var option = document.createElement("option");
+                            option.text = "doctors not available";
+                            option.value = "";
+                            doctorsList.add(option);
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>
